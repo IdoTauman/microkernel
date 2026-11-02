@@ -24,9 +24,9 @@ __attribute__((used, section(".requests_end_marker")))
 static volatile LIMINE_REQUESTS_END_MARKER;
 
 // helper function to halt the cpu
-static void halt(void) {
+__attribute__((noreturn)) static inline void halt(void) {
     for (;;) {
-        __asm__("hlt");
+        __asm__ volatile ("cli; hlt");
     }
 }
 
