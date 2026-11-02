@@ -25,6 +25,9 @@ SECTIONS
     . = ALIGN(4096);
 
     .data : {
+        *(.requests_start_marker)
+        *(.requests)
+        *(.requests_end_marker)
         *(.data .data.*)
     } :data
 

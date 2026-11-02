@@ -5,7 +5,7 @@
 
 // set the base revision to 2 (supported by Limine v8/v7)
 __attribute__((used, section(".requests")))
-static volatile LIMINE_BASE_REVISION(2);
+volatile LIMINE_BASE_REVISION(2);
 
 // marker for start of requests
 __attribute__((used, section(".requests_start_marker")))
