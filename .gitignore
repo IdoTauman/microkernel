@@ -56,3 +56,7 @@ dkms.conf
 
 # vscode
 .vscode
+
+# build
+iso_root
+*.iso
