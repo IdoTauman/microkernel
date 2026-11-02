@@ -54,7 +54,10 @@ void kmain(void) {
 
     struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
     volatile uint32_t *fb_ptr = (volatile uint32_t *)fb->address;
-    (void)fb_ptr; // suppress unused variable
+
+    kprintf("[+] Core specifier test: string='%s', char='%c'\n", "microkernel", 'A');
+    kprintf("[+] Number formats: dec=%u, signed=%d, hex=%x, ptr=%p, bin=%b\n",
+            1048576, -42, 0x1000, fb->address, 0b10110010);
 
     halt();
 }
