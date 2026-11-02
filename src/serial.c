@@ -37,3 +37,29 @@ int serial_init(void) {
     // success
     return 0;
 }
+
+static int transmit_ready() {
+    uint8_t lsr = inb(PORT(5));
+    // return non zero iff bit 5 is set
+    return lsr & (1 << 5);
+}
+
+void serial_putc(char c) {
+    // spinwait until transmission is ready
+    while (!transmit_ready()) {
+        __asm__ volatile ("pause");
+    }
+
+    // transmit character
+    outb(PORT(0), c);
+}
+
+void serial_print(const char *str) {
+    while (*str) {
+        if (*str == '\n') {
+            serial_putc('\r');
+        }
+        serial_putc(*str);
+        str++;
+    }
+}

@@ -11,13 +11,21 @@ LDFLAGS = -nostdlib -static -T linker.ld -z max-page-size=0x1000
 
 IMAGE = os.iso
 
+SRCS = $(wildcard src/*.c)
+OBJS = $(SRCS:.c=.o)
+
 all: $(IMAGE)
 
-kernel.elf: src/kernel.c
-	$(CC) $(CFLAGS) -c src/kernel.c -o kernel.o
-	$(LD) $(LDFLAGS) kernel.o -o kernel.elf
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(IMAGE): kernel.elf limine.conf
+kernel.elf: $(OBJS) linker.ld
+	$(LD) $(LDFLAGS) $(OBJS) -o $@
+
+./limine/limine:
+	$(MAKE) -C limine
+
+$(IMAGE): kernel.elf limine.conf ./limine/limine
 	rm -rf iso_root
 	mkdir -p iso_root
 	cp kernel.elf limine.conf limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/
@@ -29,7 +37,9 @@ $(IMAGE): kernel.elf limine.conf
 	./limine/limine bios-install $(IMAGE)
 
 run: $(IMAGE)
-	qemu-system-x86_64 -cdrom $(IMAGE) -m 256M
+	qemu-system-x86_64 -cdrom $(IMAGE) -m 256M -serial stdio -no-reboot -no-shutdown
 
 clean:
-	rm -rf *.o kernel.elf $(IMAGE) iso_root
+	rm -rf $(OBJS) kernel.elf $(IMAGE) iso_root
+
+.PHONY: all run clean
