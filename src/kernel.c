@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "limine.h"
 #include "serial.h"
+#include "pmm.h"
 
 // set the base revision to 2 (supported by Limine v8/v7)
 __attribute__((used, section(".requests")))
@@ -39,6 +40,8 @@ void kmain(void) {
 
     serial_print("[+] UART COM1 initialized successfully!\n");
     serial_print("[+] Booting microkernel...\n");
+
+    pmm_init();
 
     // ensure the bootloader supports the base revision
     if (LIMINE_BASE_REVISION_SUPPORTED == false) {
