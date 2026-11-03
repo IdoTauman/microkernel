@@ -43,6 +43,24 @@ void kmain(void) {
 
     pmm_init();
 
+    // allocate two pages
+    void *p1 = pmm_alloc_page();
+    void *p2 = pmm_alloc_page();
+
+    kprintf("[*] Allocated p1: %p (phys %p)\n", p1, (void *)VIRT_TO_PHYS(p1));
+    kprintf("[*] Allocated p2: %p (phys %p)\n", p2, (void *)VIRT_TO_PHYS(p2));
+
+    // memory write + readback test
+    volatile uint64_t *test_ptr = (volatile uint64_t *)p1;
+    *test_ptr = 0xCAFEBABE12345678ULL;
+    kprintf("[*] Write/Readback p1: %x\n", *test_ptr);
+
+    // free p1 and reallocate (should recycle p1)
+    pmm_free_page(p1);
+    void *p3 = pmm_alloc_page();
+    kprintf("[*] Reallocated p3: %p (matches p1: %s)\n", 
+            p3, (p3 == p1) ? "YES" : "NO");
+
     // ensure the bootloader supports the base revision
     if (LIMINE_BASE_REVISION_SUPPORTED == false) {
         halt();
