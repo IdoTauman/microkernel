@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -std=c11 -O2 -g \
          -target x86_64-unknown-none-elf \
          -ffreestanding -fno-stack-protector -fno-stack-check \
          -fno-lto -fPIE -mno-red-zone \
-         -Isrc
+         -Isrc -fno-builtin-memset
 
 LDFLAGS = -nostdlib -static -T linker.ld -z max-page-size=0x1000
 
